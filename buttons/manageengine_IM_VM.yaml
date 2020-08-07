@@ -1,0 +1,82 @@
+---
+:custom_buttons_sets:
+- name: Manageengine_IM|Vm|
+  description: Manageengine_Incident Management
+  set_type: CustomButtonSet
+  read_only: 
+  mode: 
+  custom_buttons:
+  - description: add Worklog 
+    applies_to_class: Vm
+    applies_to_exp: 
+    options:
+      :button_image: 15
+      :display: true
+    userid: admin
+    wait_for_complete: 
+    name: worklog
+    visibility:
+      :roles:
+      - _ALL_
+    applies_to_id: 
+    resource_actions:
+      action: 
+      ae_namespace: SYSTEM
+      ae_class: PROCESS
+      ae_instance: Request
+      ae_message: 
+      ae_attributes:
+        request: manageengine_worklog_incident
+      dialog_label: manageengine_incident_dialog
+  - description: Resolution
+    applies_to_class: Vm
+    applies_to_exp: 
+    options:
+      :button_image: 13
+      :display: true
+    userid: admin
+    wait_for_complete: 
+    name: Resolution
+    visibility:
+      :roles:
+      - _ALL_
+    applies_to_id: 
+    resource_actions:
+      action: 
+      ae_namespace: SYSTEM
+      ae_class: PROCESS
+      ae_instance: Request
+      ae_message: 
+      ae_attributes:
+        request: manageengine_resolution_incident
+      dialog_label: manageengine_incident_dialog
+  - description: updateorEdit
+    applies_to_class: Vm
+    applies_to_exp: 
+    options:
+      :button_image: 8
+      :display: true
+    userid: admin
+    wait_for_complete: 
+    name: update
+    visibility:
+      :roles:
+      - _ALL_
+    applies_to_id: 
+    resource_actions:
+      action: 
+      ae_namespace: SYSTEM
+      ae_class: PROCESS
+      ae_instance: Request
+      ae_message: 
+      ae_attributes:
+        request: manageengine_update_Incident
+      dialog_label: manageengine_incident_dialog
+  set_data:
+    :button_order:
+    - worklog
+    - resolution
+    - update
+    :button_image: 8
+    :display: true
+    :group_index: 7
