@@ -28,7 +28,7 @@
       ae_attributes:
         request: manageengine_worklog_incident
       dialog_label: manageengine_incident_dialog
-  - description: Resolution
+  - description: resolution
     applies_to_class: Vm
     applies_to_exp: 
     options:
@@ -36,7 +36,7 @@
       :display: true
     userid: admin
     wait_for_complete: 
-    name: Resolution
+    name: resolution
     visibility:
       :roles:
       - _ALL_

@@ -5,7 +5,7 @@
   dialog_tabs:
   - description: 
     display: edit
-    label: Manageengine
+    label: ManageEngine
     display_method: 
     display_method_options: 
     position: 0

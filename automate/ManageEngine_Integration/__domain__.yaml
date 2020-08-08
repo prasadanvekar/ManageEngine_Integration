@@ -3,7 +3,7 @@ object_type: domain
 version: 1.0
 object:
   attributes:
-    name: Managenegine_Incident
+    name: Manageengine_Integration
     description: Manageengine Incident Management Integration
     display_name: 
     system: false

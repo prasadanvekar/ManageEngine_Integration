@@ -9,4 +9,4 @@ object:
     description: 
   fields:
   - rel1:
-      value: "/Integration/ServiceNow/Incident/StateMachines/manageengine_update_incident"
+      value: "/Integration/ManageEngine/Incident/StateMachines/manageengine_update_incident"
