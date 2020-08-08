@@ -31,10 +31,8 @@ def call_manageengine(action, tablename='worklog', body=nil)
   require 'base64'
 
   servername = nil || $evm.object['servername']
-  username   = nil   || $evm.object['username']
-  password   = nil   || $evm.object.decrypt('password')
-  TECHNICIAN_KEY = nil || $evm.object['TECHNICIAN_KEY']
-  url = "https://#{servername}/sdpapi/request/#{@object.isight_request_id}/#{tablename}?TECHNICIAN_KEY=#{TECHNICIAN_KEY}&format=json"
+  technician = nil || $evm.object['techinician']
+  url = "https://#{servername}/sdpapi/request/#{@object.isight_request_id}/#{tablename}?TECHNICIAN_KEY=#{techinician}&format=json"
 
   params = {
     :method=>action, :url=>url,
@@ -54,21 +52,21 @@ def call_manageengine(action, tablename='worklog', body=nil)
 end
 
 def build_payload
-  data  = "operation": {
-              "details": {
-                  "worklogs": {
-                      "worklog":{
-                          "description": "#{@object.description}",
-                          "markFirstResponse": "true",
-                          "startTime": "#{@object.created_on}",
-                          "endTime": "#{@object.fulfilled_on}",
-                          "techinician": "administrator",
-                          "site": "#{@object.site}",
-                          "account": "#{@object.account}"
-                      }
-                  }
-              }
-  } 
+  data  = "operation: {"
+  data +=    "details: {"
+  data +=        "worklogs: {"
+  data +=            "worklog :{"
+  data +=                          "description: #{@object.description},"
+  data +=                          "markFirstResponse: true,"
+  data +=                          "startTime: #{@object.created_on},"
+  data +=                          "endTime: #{@object.fulfilled_on},"
+  data +=                          "techinician: administrator,"
+  data +=                          "site: #{@object.site},"
+  data +=                          "account: #{@object.account}"
+  data +=                     "}"
+  data +=                  "}"
+  data +=              "}"
+  data +=  "}" 
   (body_hash ||= {})['data'] = data
   return body_hash
 end

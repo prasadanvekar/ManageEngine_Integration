@@ -31,10 +31,8 @@ def call_manageengine(action, tablename='resolution', body=nil)
   require 'base64'
 
   servername = nil || $evm.object['servername']
-  username   = nil   || $evm.object['username']
-  password   = nil   || $evm.object.decrypt('password')
-  TECHNICIAN_KEY = nil || $evm.object['TECHNICIAN_KEY']
-  url = "https://#{servername}/sdpapi/request/#{@object.isight_request_id}/#{tablename}?TECHNICIAN_KEY=#{TECHNICIAN_KEY}&format=json"
+  technician= nil || $evm.object['technician']
+  url = "https://#{servername}/sdpapi/request/#{@object.isight_request_id}/#{tablename}?TECHNICIAN_KEY=#{technician}&format=json"
 
   params = {
     :method=>action, :url=>url,
@@ -54,15 +52,15 @@ def call_manageengine(action, tablename='resolution', body=nil)
 end
 
 def build_payload
-  data  = "operation": {
-              "details": {
-                  "resolution": {
-                          "resolutiontext": "#{@object.message}",
-                          "site": "#{@object.site}",
-                          "account": "#{@object.account}"
-                      }
-              }
-  } 
+  data  = "operation: {"
+  data +=     "details: {"
+  data +=        "resolution: {"
+  data +=                 "resolutiontext: #{@object.message},"
+  data +=                 "site: #{@object.site},"
+  data +=                 "account: #{@object.account}"
+  data +=                    "}"
+  data +=            "}"
+  data += "}" 
   (body_hash ||= {})['data'] = data
   return body_hash
 end

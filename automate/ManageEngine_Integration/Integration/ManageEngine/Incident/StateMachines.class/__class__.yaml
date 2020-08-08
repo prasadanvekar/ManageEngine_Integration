@@ -33,50 +33,10 @@ object:
       max_time: 
   - field:
       aetype: attribute
-      name: username
-      display_name: 
-      datatype: string
-      priority: 2
-      owner: 
-      default_value: admin
-      substitute: true
-      message: create
-      visibility: 
-      collect: 
-      scope: 
-      description: 
-      condition: 
-      on_entry: 
-      on_exit: 
-      on_error: 
-      max_retries: 
-      max_time: 
-  - field:
-      aetype: attribute
-      name: password
-      display_name: 
-      datatype: password
-      priority: 3
-      owner: 
-      default_value: v2:{C0MsKkT1Ub0exAydzugbCQ==}
-      substitute: true
-      message: create
-      visibility: 
-      collect: 
-      scope: 
-      description: 
-      condition: 
-      on_entry: 
-      on_exit: 
-      on_error: 
-      max_retries: 
-      max_time: 
-  - field:
-      aetype: attribute
       name: proxy_url
       display_name: 
       datatype: string
-      priority: 4
+      priority: 2
       owner: 
       default_value: 
       substitute: true
@@ -93,10 +53,10 @@ object:
       max_time: 
   - field:
       aetype: attribute
-      name: TECHNICIAN_KEY
+      name: technician
       display_name: 
       datatype: string
-      priority: 5
+      priority: 3
       owner: 
       default_value: 
       substitute: true
@@ -116,7 +76,7 @@ object:
       name: Step1
       display_name: ''
       datatype: string
-      priority: 6
+      priority: 4
       owner: 
       default_value: 
       substitute: true
@@ -136,7 +96,7 @@ object:
       name: Step2
       display_name: ''
       datatype: string
-      priority: 7
+      priority: 5
       owner: 
       default_value: 
       substitute: true
@@ -156,7 +116,7 @@ object:
       name: Step3
       display_name: ''
       datatype: string
-      priority: 8
+      priority: 6
       owner: 
       default_value: 
       substitute: true
@@ -176,7 +136,7 @@ object:
       name: Step4
       display_name: ''
       datatype: string
-      priority: 9
+      priority: 7
       owner: 
       default_value: 
       substitute: true
