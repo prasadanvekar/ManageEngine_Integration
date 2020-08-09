@@ -3,7 +3,7 @@ object_type: method
 version: 1.0
 object:
   attributes:
-    name: managenengine_worklog_incident
+    name: manageengine_worklog_incident
     display_name: 
     description: 
     scope: instance

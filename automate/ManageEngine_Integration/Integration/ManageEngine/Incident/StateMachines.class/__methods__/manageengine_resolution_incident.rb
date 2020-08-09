@@ -1,5 +1,5 @@
 =begin
- manageengine_worklog_incident.rb
+ manageengine_resolution_incident.rb
 
  Author: Prasad <prasad.a@cloudfx.com>
 

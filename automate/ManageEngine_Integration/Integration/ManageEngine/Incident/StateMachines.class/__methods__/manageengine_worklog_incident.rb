@@ -31,8 +31,8 @@ def call_manageengine(action, tablename='worklog', body=nil)
   require 'base64'
 
   servername = nil || $evm.object['servername']
-  technician = nil || $evm.object['techinician']
-  url = "https://#{servername}/sdpapi/request/#{@object.isight_request_id}/#{tablename}?TECHNICIAN_KEY=#{techinician}&format=json"
+  technician = nil || $evm.object['technician']
+  url = "https://#{servername}/sdpapi/request/24333/#{tablename}?TECHNICIAN_KEY=#{technician}&format=json"
 
   params = {
     :method=>action, :url=>url,
@@ -51,18 +51,52 @@ def call_manageengine(action, tablename='worklog', body=nil)
   return me_response_hash['result']
 end
 
+# isight_request_id = @object.custom_get(:isight_request_id)
+#  log(:info, "Found custom attribute {:isight_request_id=>#{isight_request_id}} from #{@object.name}") if isight_request_id
+
+#  raise "missing isight_request_id" if isight_request_id.nil?
+
+
+def get_description
+  description = @object.description rescue nil
+  description.blank? ? (return @object.name) : (return description)
+end
+
+def get_starttime
+  starttime = @object.created_on.to_i rescue nil
+  starttime.blank? ? (return Time.now.to_i) : (return starttime)
+end
+
+def get_endtime
+    endtime = @object.updated_on.to_i rescue nil
+    endtime.blank? ? (return Time.now.to_i) : (return endtime)
+end
+
+def get_site
+#     isight_site = @object.custom_get(:isight_site)
+#     log(:info, "Found custom attribute {:isight_site=>#{isight_site}} from #{@object.name}") if isight_site
+#     raise "missing site details" if isight_site.nil?
+end
+
+def get_account
+#     isight_account = @object.custom_get(:isight_account)
+#     log(:info, "Found custom attribute {:isight_account=>#{isight_account}} from #{@object.name}") if isight_account
+#     raise "missing site details" if isight_account.nil?
+end
+
+
 def build_payload
   data  = "operation: {"
   data +=    "details: {"
   data +=        "worklogs: {"
   data +=            "worklog :{"
-  data +=                          "description: #{@object.description},"
-  data +=                          "markFirstResponse: true,"
-  data +=                          "startTime: #{@object.created_on},"
-  data +=                          "endTime: #{@object.fulfilled_on},"
+  data +=                          "description: '#{get_description}',"
+  data +=                          "markFirstResponse: 'true',"
+  data +=                          "startTime: #{get_starttime},"
+  data +=                          "endTime: #{get_endtime},"
   data +=                          "techinician: administrator,"
-  data +=                          "site: #{@object.site},"
-  data +=                          "account: #{@object.account}"
+  data +=                          "site: 'NTTD',"
+  data +=                          "account: 'EVEREST' "
   data +=                     "}"
   data +=                  "}"
   data +=              "}"
@@ -116,13 +150,7 @@ begin
     log(:info, "number: #{me_result['number']}")
     log(:info, "sys_id: #{me_result['sys_id']}")
     log(:info, "state: #{me_result['state']}")
-
-    log(:info, "Adding custom attribute {:me_incident_number => #{me_result['number']}}")
-    @object.custom_set(:isight_request_id, me_result['number'].to_s)
-    log(:info, "Adding custom attribute {:me_incident_sysid => #{me_result['sys_id']}}")
-    @object.custom_set(:me_incident_sysid, me_result['sys_id'].to_s)
-    log(:info, "Resetting custom attribute {:me_incident_state => #{me_result['state']}}")
-    @object.custom_set(:me_incident_state, me_result['state'].to_s)
+    
   end
 
 rescue => err
