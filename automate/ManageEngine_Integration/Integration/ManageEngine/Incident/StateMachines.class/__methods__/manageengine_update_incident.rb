@@ -1,5 +1,5 @@
 =begin
- manageengine_worklog_incident.rb
+ manageengine_update_incident.rb
 
  Author: Prasad <prasad.a@cloudfx.com>
 
@@ -25,14 +25,14 @@ def log(level, msg, update_message = false)
   @task.message = msg if @task && (update_message || level == 'error')
 end
 
-def call_manageengine(action, tablename='worklog', body=nil)
+def call_manageengine(action, tablename='update', body=nil)
   require 'rest_client'
   require 'json'
   require 'base64'
 
   servername = nil || $evm.object['servername']
   technician = nil || $evm.object['technician']
-  url = "https://#{servername}/sdpapi/request/#{@object.isight_request_id}?TECHNICIAN_KEY=#{technician}&format=json"
+  url = "https://#{servername}/sdpapi/request/#{get_request_id}?TECHNICIAN_KEY=#{technician}&format=json"
 
   params = {
     :method=>action, :url=>url,
@@ -51,14 +51,19 @@ def call_manageengine(action, tablename='worklog', body=nil)
   return me_response_hash['result']
 end
 
+def get_description
+  description = @object.description rescue nil
+  description.blank? ? (return @object.name) : (return description)
+end
+
 def build_payload
   data  = "operation: {"
   data +=      "details: {"
-  data +=                        "subject: #{@object.description},"
-  data +=                         "description: #{@object.description},"
+  data +=                         "subject: '#{get_description}',"
+  data +=                         "description: '#{get_description}',"
   data +=                         "requester: administrator,"
-  data +=                         "site: #{@object.site},"
-  data +=                         "account: #{@object.account}"
+  data +=                         "site: '#{get_site}',"
+  data +=                         "account: '#{get_account}'"
   data +=             "}"
   data +=  "}" 
   (body_hash ||= {})['data'] = data
@@ -79,6 +84,24 @@ begin
   end
 
   exit MIQ_STOP unless @object
+
+def get_request_id
+  isight_request_id = @object.custom_get(:isight_request_id) rescue nil
+  log(:info, "Found custom attribute {:isight_request_id=>#{isight_request_id}} from #{@object.name}") if isight_request_id
+  isight_request_id.nil? ? (raise "missing request id details ") : (return isight_request_id)
+end
+
+def get_site
+     isight_site = @object.custom_get(:isight_site) rescue nil
+     log(:info, "Found custom attribute {:isight_site=>#{isight_site}} from #{@object.name}") if isight_site
+     isight_site.nil? ? (raise "missing site details") :  (return isight_site)
+end
+
+def get_account
+     isight_account = @object.custom_get(:isight_account) rescue nil
+     log(:info, "Found custom attribute {:isight_account=>#{isight_account}} from #{@object.name}") if isight_account
+     isight_account.nil? ? (raise "missing account details") :  (return isight_account)
+end
 
   body_hash = build_payload
 
@@ -104,19 +127,19 @@ begin
 
     # call managenengine
     log(:info, "Calling ManageEngine: incident information: #{body_hash.inspect}")
-    me_result = call_manageengine(:put, 'worklog', body_hash)
+    me_result = call_manageengine(:put, 'update', body_hash)
 
     log(:info, "me_result: #{me_result.inspect}")
     log(:info, "number: #{me_result['number']}")
     log(:info, "sys_id: #{me_result['sys_id']}")
     log(:info, "state: #{me_result['state']}")
 
-    log(:info, "Adding custom attribute {:me_incident_number => #{me_result['number']}}")
-    @object.custom_set(:isight_request_id, me_result['number'].to_s)
-    log(:info, "Adding custom attribute {:me_incident_sysid => #{me_result['sys_id']}}")
-    @object.custom_set(:me_incident_sysid, me_result['sys_id'].to_s)
-    log(:info, "Resetting custom attribute {:me_incident_state => #{me_result['state']}}")
-    @object.custom_set(:me_incident_state, me_result['state'].to_s)
+#    log(:info, "Adding custom attribute {:me_incident_number => #{me_result['number']}}")
+#    @object.custom_set(:isight_request_id, me_result['number'].to_s)
+#    log(:info, "Adding custom attribute {:me_incident_sysid => #{me_result['sys_id']}}")
+#    @object.custom_set(:me_incident_sysid, me_result['sys_id'].to_s)
+#    log(:info, "Resetting custom attribute {:me_incident_state => #{me_result['state']}}")
+#    @object.custom_set(:me_incident_state, me_result['state'].to_s)
   end
 
 rescue => err

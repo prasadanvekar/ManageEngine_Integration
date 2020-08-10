@@ -29,10 +29,12 @@ def call_manageengine(action, tablename='worklog', body=nil)
   require 'rest_client'
   require 'json'
   require 'base64'
+  require 'time'
+  require 'date'
 
   servername = nil || $evm.object['servername']
   technician = nil || $evm.object['technician']
-  url = "https://#{servername}/sdpapi/request/24333/#{tablename}?TECHNICIAN_KEY=#{technician}&format=json"
+  url = "https://#{servername}/sdpapi/request/#{get_request_id}/#{tablename}?TECHNICIAN_KEY=#{technician}&format=json"
 
   params = {
     :method=>action, :url=>url,
@@ -51,10 +53,7 @@ def call_manageengine(action, tablename='worklog', body=nil)
   return me_response_hash['result']
 end
 
-# isight_request_id = @object.custom_get(:isight_request_id)
-#  log(:info, "Found custom attribute {:isight_request_id=>#{isight_request_id}} from #{@object.name}") if isight_request_id
 
-#  raise "missing isight_request_id" if isight_request_id.nil?
 
 
 def get_description
@@ -72,19 +71,6 @@ def get_endtime
     endtime.blank? ? (return Time.now.to_i) : (return endtime)
 end
 
-def get_site
-#     isight_site = @object.custom_get(:isight_site)
-#     log(:info, "Found custom attribute {:isight_site=>#{isight_site}} from #{@object.name}") if isight_site
-#     raise "missing site details" if isight_site.nil?
-end
-
-def get_account
-#     isight_account = @object.custom_get(:isight_account)
-#     log(:info, "Found custom attribute {:isight_account=>#{isight_account}} from #{@object.name}") if isight_account
-#     raise "missing site details" if isight_account.nil?
-end
-
-
 def build_payload
   data  = "operation: {"
   data +=    "details: {"
@@ -94,9 +80,9 @@ def build_payload
   data +=                          "markFirstResponse: 'true',"
   data +=                          "startTime: #{get_starttime},"
   data +=                          "endTime: #{get_endtime},"
-  data +=                          "techinician: administrator,"
-  data +=                          "site: 'NTTD',"
-  data +=                          "account: 'EVEREST' "
+  data +=                          "technician: administrator,"
+  data +=                          "site: '#{get_site}',"
+  data +=                          "account: '#{get_account}' "
   data +=                     "}"
   data +=                  "}"
   data +=              "}"
@@ -119,6 +105,24 @@ begin
   end
 
   exit MIQ_STOP unless @object
+
+def get_request_id
+  isight_request_id = @object.custom_get(:isight_request_id) rescue nil
+  log(:info, "Found custom attribute {:isight_request_id=>#{isight_request_id}} from #{@object.name}") if isight_request_id
+  isight_request_id.nil? ? (raise "missing request id details ") : (return isight_request_id)
+end
+
+def get_site
+     isight_site = @object.custom_get(:isight_site) rescue nil
+     log(:info, "Found custom attribute {:isight_site=>#{isight_site}} from #{@object.name}") if isight_site
+     isight_site.nil? ? (raise "missing site details") :  (return isight_site)
+end
+
+def get_account
+     isight_account = @object.custom_get(:isight_account) rescue nil
+     log(:info, "Found custom attribute {:isight_account=>#{isight_account}} from #{@object.name}") if isight_account
+     isight_account.nil? ? (raise "missing account details") :  (return isight_account)
+end
 
   body_hash = build_payload
 
